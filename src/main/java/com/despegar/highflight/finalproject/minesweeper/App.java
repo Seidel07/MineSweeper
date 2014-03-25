@@ -2,39 +2,37 @@ package com.despegar.highflight.finalproject.minesweeper;
 
 import java.lang.reflect.Array;
 import java.util.Random;
+import java.lang.Object;
+
 
 public class App 
 {
 		
-	
-    private void NewGame()  {
-        int m=3; //file quantity
-        int n=4;  //column quantity  	
+	private void NewGame(int file, int row)  {
         int ms[][];
-        ms = new int[m][n]; //Creating the matrix
-        //Array [][] ms = new Array [m][n]; 
-        double k = Math.floor(m*n*0.15); //mine quantity
-        for (int i=0;i<m;i++) { //assigning 0 to each element of the  matrix
-        	for (int j=0;j<n;j++) {
+        ms = new int[file][row]; //Creating the matrix
+        double mines = Math.floor(file*row*0.15); //mine quantity
+        for (int i=0;i<file;i++) { //assigning 0 to each element of the  matrix
+        	for (int j=0;j<row;j++) {
         		ms[i][j] = 0;
         	}
         }
-        for (int p=1; p<=k;) { //assigning 9 to the mines
+        for (int p=1; p<=mines;) { //assigning 9 to the mines
         	Random rand = new Random();
-        	int value1 = rand.nextInt(m) + 1;
-        	int value2 = rand.nextInt(n) + 1;
+        	int value1 = rand.nextInt(file) + 1;
+        	int value2 = rand.nextInt(row) + 1;
         	if (ms[value1][value2] != 9) {
         		ms[value1][value2] = 9;
         		p=p+1;
        }
         
     }
-        for (int i=0 ; i<m;i++) { //assigning the corresponding numbers to each element that isn't a mine
-        	for (int j=0;j<n;j++) {
+        for (int i=0 ; i<file;i++) { //assigning the corresponding numbers to each element that isn't a mine
+        	for (int j=0;j<row;j++) {
         		if(ms[i][j]==9) {
         			for (int a = i-1;a<=i+1;a++) {
         				for (int b=j-1;b<=j+1;b++) {
-        					if (a*b>0 || a<=m || b<=n) {
+        					if (a*b>=0 || a<=file || b<=row) {
         						if (ms[a][b] !=9) {
         							ms[a][b] = ms[a][b] + 1;
         						}
@@ -47,8 +45,14 @@ public class App
         }
 	
 	}
-    public static void main (String []args) {
+	
+	
+    
+	
+	/*public static void main (String []args) {
+    	App MineSweeper = new App();
+    	game = MineSweeper.NewGame();
     	
     	
-    }
+    }*/
 }
