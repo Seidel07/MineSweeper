@@ -1,16 +1,10 @@
 package com.despegar.highflight.finalproject.minesweeper;
 
 import java.lang.reflect.Array;
+import java.util.Random;
 
-public class GridCell {
-	private Array Grid;
-	private int Cell;
-	private char Flag;
+public abstract class GridCell {
+	//public abstract void newGame(int files, int rows);
 	
 	
-	private void isMine(int file, int row){}
-	private void CellState(int file, int row){}
-	private void AdjacentCells(int file, int row) {}
-	
-
 }
