@@ -1,19 +1,19 @@
 package com.despegar.highflight.finalproject.minesweeper;
 
 public class Cell {
-	private boolean isFlaged;
+	private boolean isFlagged;
 	private boolean isMine;
 	private boolean isCovered; 
-	private int minesAround = 0;
+	private int minesAround;
 	
 	
 		
-	public boolean isFlaged() {
-		return isFlaged;
+	public boolean isFlagged() {
+		return isFlagged;
 	}
 
-	public void setFlaged(boolean isFlaged) {
-		this.isFlaged = isFlaged;
+	public void setFlagged(boolean isFlaged) {
+		this.isFlagged = isFlaged;
 	}
 
 	public boolean hasMine() {

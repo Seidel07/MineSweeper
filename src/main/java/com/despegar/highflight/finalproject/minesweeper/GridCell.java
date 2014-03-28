@@ -1,13 +1,23 @@
 package com.despegar.highflight.finalproject.minesweeper;
 
 import java.util.Random;
+import com.despegar.highflight.utils.MatrixUtils;
 
 public class GridCell {
 	private Cell cells[][];
 	private int remaining;
 	private int columns;
 	private int rows;
+	private int binaryGridCell[][];
 	
+	public int[][] getBinaryGridCell() {
+		return binaryGridCell;
+	}
+
+	public void setBinaryGridCell(int[][] binaryGridCell) {
+		this.binaryGridCell = binaryGridCell;
+	}
+
 	public int getColumns() {
 		return columns;
 	}
@@ -43,18 +53,19 @@ public class GridCell {
 	public void createGridCell() {
 		
 		this.cells = new Cell[this.rows][this.columns];
-		
+		this.binaryGridCell = new int[this.rows][this.columns];
 		for(int i = 0; i < this.rows; i++) {
 			for(int j = 0; j < this.columns; j++) {
 				this.cells[i][j] = new Cell();
 				this.cells[i][j].setMinesAround(0);
 				this.cells[i][j].setCovered(true);
+				this.binaryGridCell[i][j]=0;
 			}
 		}
 	}
 	
 	private void setMines() {
-		int mines = this.columns*this.rows-this.remaining; //calculate how many mines i need
+		int mines = (this.columns*this.rows)-this.remaining; //calculate how many mines i need
 		int cantMines = 0; //counter to see how many mines i have so far
 		while (cantMines < mines) { //beginning the assignment of mines
 			Random rand = new Random();
@@ -75,7 +86,7 @@ public class GridCell {
 						for (int b=j-1; b <= j+1 ; b++) { //going throw the adjacent columns of [i][j]
 							if (a>=0 && b>=0 && a<this.rows && b<this.columns) { //asking if the adjacent cells of cells[i][j] is inbounds
 								if(!cells[a][b].hasMine()) {
-									cells[a][b].setMinesAround(cells[a][b].getMinesAround()+1); //if it doesn't, adding 1 to the mines that a cell has around 
+									cells[a][b].setMinesAround(cells[a][b].getMinesAround()+1); //if it doesn't, adding 1 to the mines that a cell has around
 								}
 							}
 						}
@@ -94,13 +105,17 @@ public class GridCell {
 		for (int i=0;i<rows;i++) {
 			for (int j=0;j<columns;j++) {
 				if (cells[i][j].isCovered()) { //asking if a cell is covered
-					if (cells[i][j].isFlaged()) { //if it's not covered, i ask if it's flaged 
-						System.out.print("F "); //if it's flaged, I print an F
+					if (cells[i][j].isFlagged()) { //if it's not covered, i ask if it's flagged 
+						System.out.print("F "); //if it's flagged, I print an F
 					} else {
-						System.out.print("C "); //if it's not flaged, I print a C
+						System.out.print(". "); //if it's not flagged, I print a C
 					}
 				} else {
-					System.out.print(cells[i][j].getMinesAround() + " "); //if is uncovered, i print the number of mines around with a space
+					if (cells[i][j].hasMine()) {
+						System.out.print("M "); //if is uncovered, i print the number of mines around with a space
+					} else {
+						System.out.print(cells[i][j].getMinesAround() + " ");
+					}
 				}
 			}
 			System.out.println(); //going one row down to have the matrix design
@@ -111,18 +126,17 @@ public class GridCell {
 	
 	public boolean isGameOver() {
 		boolean finished = false;
-		if (this.remaining > 0) {
-			for (int i=0;i<this.rows-1;i++) {
-				for (int j=0;j<this.columns-1;j++) {
-					if (cells[i][j].hasMine()) {
-						if (!cells[i][j].isCovered()) {
-							finished = true;
-							this.remaining = -1;
-						}
+		for (int i=0;i<this.rows;i++) {
+			for (int j=0;j<this.columns;j++) {
+				if (cells[i][j].hasMine()) {
+					if (!cells[i][j].isCovered()) {
+						finished = true;
+						this.remaining = -1;
 					}
 				}
 			}
-		} else {
+		}
+		if (this.remaining == 0) {
 			finished = true;
 		}
 		return finished;
@@ -130,18 +144,21 @@ public class GridCell {
 	
 	public void uncover(int row, int column) {
 		if (cells[row][column].isCovered()) {
-			this.remaining = this.remaining - 1;
 			cells[row][column].setCovered(false);
-			cells[row][column].setFlaged(false);
+			cells[row][column].setFlagged(false);
+			this.remaining = this.remaining - 1;
+			MatrixUtils.cascade(getBinaryGridCell(), row, column);
+			
+			
 		}
 		
 	}
 	
 	public void flagAsMine (int row, int column) {
-		if (cells[row][column].isFlaged()) {
-			cells[row][column].setFlaged(false);
+		if (cells[row][column].isFlagged()) {
+			cells[row][column].setFlagged(false);
 		} else {
-			cells[row][column].setFlaged(true);
+			cells[row][column].setFlagged(true);
 		}
 	}
 	
@@ -157,7 +174,7 @@ public class GridCell {
 		for (int i=0;i<this.rows;i++) {
 			for (int j=0;j<this.columns;j++) {
 				if (cells[i][j].hasMine()) { //asking if a cell is covered
-					System.out.println("F ");
+					System.out.print("M ");
 				} else {
 					System.out.print(cells[i][j].getMinesAround() + " "); //if is uncovered, i print the number of mines around with a space
 				}
@@ -170,14 +187,26 @@ public class GridCell {
 	public void displayRaw () {
 		for (int i=0;i<this.rows;i++) {
 			for (int j=0;j<this.columns;j++) {
-				if (cells[i][j].hasMine()) { //asking if a cell is covered
-					System.out.println("1 ");
-				} else {
-					System.out.print("0 "); //if is uncovered, i print the number of mines around with a space
-				}
+				System.out.print(getBinaryGridCell() + " ");
 			}
 			System.out.println(); //going one row down to have the matrix design
 		}
 	
 	}
+	
+	public int[][] binaryGridCell () {
+		int binaryGridCell[][] = new int[this.rows][this.columns];
+		for(int i = 0; i < this.rows; i++) {
+			for(int j = 0; j < this.columns; j++) {
+				if (cells[i][j].hasMine()) {
+					binaryGridCell[i][j] = 1;
+				} else {
+					binaryGridCell[i][j] = 0;
+				}
+			}
+		}
+		return binaryGridCell;
+	}
+	
+	
 }

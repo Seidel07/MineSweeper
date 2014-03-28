@@ -2,21 +2,24 @@ package com.despegar.highflight.finalproject.minesweeper;
 
 import java.util.Scanner;
 
+import com.despegar.highflight.utils.MatrixUtils;
+
 
 public class App {
 	public static void main (String[]args) {
-		System.out.println("¿Cuantas filas y columnas desea que tenga");
+		System.out.println("¿Cuantas filas y columnas desea que tenga?");
 		Scanner sc = new Scanner(System.in);
 		int rows = sc.nextInt();
 		int columns = sc.nextInt();
 		GridCell game = new GridCell();
-		game.createGridCell();
-		game.newGame();
-		game.display();
-		game.setRemaining(rows*columns*85/100+1);
+		//GridCell binary = new GridCell();
 		game.setRows(rows);
 		game.setColumns(columns);
-		System.out.println(game.getRemaining());
+		game.setRemaining(rows*columns*85/100+1);
+		game.createGridCell();
+		game.newGame();
+		game.displayRaw();
+		game.display();
 		while (!game.isGameOver()) {
 			System.out.println("Seleccione una opcion 1.U/2.F");
 			int opt = sc.nextInt();
@@ -34,6 +37,8 @@ public class App {
 			System.out.println(game.getRemaining());
 		}
 		game.isWinningGame();
+		game.displayInternal();
+		
 			
 	}
 }
