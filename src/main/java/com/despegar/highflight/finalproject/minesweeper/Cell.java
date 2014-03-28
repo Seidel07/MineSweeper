@@ -3,7 +3,7 @@ package com.despegar.highflight.finalproject.minesweeper;
 public class Cell {
 	private boolean isFlaged;
 	private boolean isMine;
-	private boolean isCovered = true; 
+	private boolean isCovered; 
 	private int minesAround = 0;
 	
 	
